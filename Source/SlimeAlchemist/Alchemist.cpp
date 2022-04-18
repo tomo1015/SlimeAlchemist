@@ -60,9 +60,22 @@ void AAlchemist::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 }
 
 //前後移動
-void AAlchemist::MoveForward(float value)
+void AAlchemist::MoveForward(float Value)
 {
+	//コントローラーがあって、入力値が0でないならば
+	if ((Controller != nullptr) && (Value != 0.0f)) 
+	{
+		//コントローラーから入力される回転を取得する
+		FRotator Rotation = Controller->GetControlRotation();
+		//Yawの回転のみ取得する
+		FRotator YawRotation = FRotator(0, Rotation.Yaw, 0);
 
+		//キャラの移動方向を取得する
+		FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+
+		//向きと入力値を移動メソッドへ入れる
+		AddMovementInput(Direction, Value);
+	}
 }
 
 //左右移動
