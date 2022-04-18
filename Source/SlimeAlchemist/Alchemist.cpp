@@ -50,13 +50,17 @@ void AAlchemist::Tick(float DeltaTime)
 }
 
 //入力のバインド処理
-void AAlchemist::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AAlchemist::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	//UObjectクラスでチェック処理を動かす
 	//※UObjectクラスには参照の自動更新やGC（ガーベジコレクション）の処理があるのでそれを利用する
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	//アクションインプットを設定
+	//第一引数：プロジェクト設定→インプット→バインディングで設定した名前
+	//第三引数：動作させたいメソッド
+	PlayerInputComponent->BindAxis("Move Forward", this, &AAlchemist::MoveForward);//前後移動
+	PlayerInputComponent->BindAxis("Move Right", this, &AAlchemist::MoveRight);//左右移動
 }
 
 //前後移動
@@ -79,7 +83,20 @@ void AAlchemist::MoveForward(float Value)
 }
 
 //左右移動
-void AAlchemist::MoveRight(float value)
+void AAlchemist::MoveRight(float Value)
 {
+	//コントローラーがあって、入力値が0でないならば
+	if ((Controller != nullptr) && (Value != 0.0f))
+	{
+		//コントローラーから入力される回転を取得する
+		FRotator Rotation = Controller->GetControlRotation();
+		//Yawの回転のみ取得する
+		FRotator YawRotation = FRotator(0, Rotation.Yaw, 0);
 
+		//キャラの移動方向を取得する
+		FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+		//向きと入力値を移動メソッドへ入れる
+		AddMovementInput(Direction, Value);
+	}
 }
