@@ -59,8 +59,8 @@ void AAlchemist::SetupPlayerInputComponent(class UInputComponent* PlayerInputCom
 	//アクションインプットを設定
 	//第一引数：プロジェクト設定→インプット→バインディングで設定した名前
 	//第三引数：動作させたいメソッド
-	PlayerInputComponent->BindAxis("Move Forward", this, &AAlchemist::MoveForward);//前後移動
-	PlayerInputComponent->BindAxis("Move Right", this, &AAlchemist::MoveRight);//左右移動
+	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AAlchemist::MoveForward);//前後移動
+	PlayerInputComponent->BindAxis("Move Right / Left", this, &AAlchemist::MoveRight);//左右移動
 }
 
 //前後移動
